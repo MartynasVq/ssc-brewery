@@ -9,6 +9,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class BeerRestControllerIT extends BaseIT {
 
     @Test
+    void deleteBeer() throws Exception {
+        mockMvc.perform(delete("/api/v1/beer/67f8242b-5f11-49a6-a05e-05ac6e56e281")
+                .header("api-key", "admin2").header("api-secret", "admin2"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void findBeers() throws Exception {
         mockMvc.perform(get("/api/v1/beer/")).andExpect(status().isOk());
     }
