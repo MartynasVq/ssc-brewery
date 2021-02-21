@@ -1,6 +1,7 @@
 package guru.sfg.brewery.security;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-public class RestHeaderAuthFilter extends AbstractAuthenticationProcessingFilter {
+public class RestHeaderAuthFilter extends AbstractRestAuthFilter {
 
 
     public RestHeaderAuthFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
@@ -26,72 +27,13 @@ public class RestHeaderAuthFilter extends AbstractAuthenticationProcessingFilter
     }
 
     @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-            throws IOException, ServletException {
-
-        HttpServletRequest request = (HttpServletRequest) req;
-        HttpServletResponse response = (HttpServletResponse) res;
-
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Request is to process authentication");
-        }
-
-        Authentication authResult = attemptAuthentication(request, response);
-
-        log.debug("=========================");
-
-        if (authResult != null) {
-            successfulAuthentication(request, response, chain, authResult);
-        } else {
-            chain.doFilter(request, response);
-        }
-    }
-
-    @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        String userName = getUsername(request);
-        String password = getPassword(request);
-
-        if (userName == null){
-            userName = "";
-        }
-
-        if (password == null){
-            password = "";
-        }
-
-        log.debug("Authenticating User: " + userName);
-
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userName, password);
-
-        if (!StringUtils.isEmpty(userName)) {
-            return this.getAuthenticationManager().authenticate(token);
-        } else {
-            return null;
-        }
-    }
-
-    private String getPassword(HttpServletRequest httpServletRequest) {
+    protected String getPassword(HttpServletRequest httpServletRequest) {
         return httpServletRequest.getHeader("api-secret");
     }
 
-    private String getUsername(HttpServletRequest http) {
-        return http.getHeader("api-key");
-    }
-
     @Override
-    protected void successfulAuthentication(HttpServletRequest request,
-                                            HttpServletResponse response, FilterChain chain, Authentication authResult)
-            throws IOException, ServletException {
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Authentication success. Updating SecurityContextHolder to contain: "
-                    + authResult);
-        }
-
-        SecurityContextHolder.getContext().setAuthentication(authResult);
-
+    protected String getUsername(HttpServletRequest http) {
+        return http.getHeader("api-key");
     }
 
 }
