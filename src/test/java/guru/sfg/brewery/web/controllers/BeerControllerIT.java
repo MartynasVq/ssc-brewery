@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -34,6 +35,7 @@ public class BeerControllerIT extends BaseIT{
 
     @Test
     void testHttpBasicAuth() throws Exception {
+
         mockMvc.perform(get("/beers/find/").with(httpBasic("scott", "tiger")))
                 .andExpect(status().isOk()).andExpect(view()
                 .name("beers/findBeers")).andExpect(model().attributeExists("beer"));

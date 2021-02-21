@@ -34,10 +34,16 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return restHeaderAuthFilter;
     }
 
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return MyPasswordEncoder.createDelegatingPasswordEncoder();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.addFilterBefore(restHeaderAuthFilter(authenticationManager()),
-                UsernamePasswordAuthenticationFilter.class);
+                UsernamePasswordAuthenticationFilter.class).csrf().disable();
 
         http.authorizeRequests(auth -> {
             auth.antMatchers("/", "/webjars/**", "/resources/**").permitAll();
@@ -50,26 +56,22 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return MyPasswordEncoder.createDelegatingPasswordEncoder();
-    }
 
-    //Overriding default spring config for user
-    @Override
-    @Bean
-    protected UserDetailsService userDetailsService() {
-        UserDetails admin = User.withDefaultPasswordEncoder()
-                .username("admin1").password("admin1")
-                .roles("ADMIN").build();
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username("user1").password("user2")
-                .roles("USER").build();
-
-        return new InMemoryUserDetailsManager(admin, user);
-    }
-
-    //alternative way of initializing the user
+//    //Overriding default spring config for user
+//    @Override
+//    @Bean
+//    protected UserDetailsService userDetailsService() {
+//        UserDetails admin = User.withDefaultPasswordEncoder()
+//                .username("admin1").password("admin1")
+//                .roles("ADMIN").build();
+//        UserDetails user = User.withDefaultPasswordEncoder()
+//                .username("user1").password("user2")
+//                .roles("USER").build();
+//
+//        return new InMemoryUserDetailsManager(admin, user);
+//    }
+//
+//    //alternative way of initializing the user
 
 
     @Override
@@ -80,11 +82,9 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .password(pe.encode("admin2")).roles("ADMIN");
         */
 
-        // Encoder option 2
-        // noop = plaintext /
         auth.inMemoryAuthentication().withUser("admin2")
-                .password("admin2").roles("ADMIN").and().withUser("scott")
-        .password("tiger").roles("CUSTOMER");
+                .password("{bcrypt11}$2a$11$BxZmrxKEGLZL1jY9PS0nXOdjtfFaTvE1RWtHvS6r/d/jqG0YA1X9S").roles("ADMIN").and().withUser("scott")
+        .password("{bcrypt11}$2a$11$v1mnKLiBfVEsqIMRIRRkoeBNjnUZLEnRkQBe1YAkdEIHdFYMzTyq6").roles("CUSTOMER");
     }
 
 }
