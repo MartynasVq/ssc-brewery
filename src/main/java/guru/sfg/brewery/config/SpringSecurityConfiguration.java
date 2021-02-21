@@ -1,5 +1,6 @@
 package guru.sfg.brewery.config;
 
+import guru.sfg.brewery.security.MyPasswordEncoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
@@ -32,6 +34,11 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and().httpBasic();
     }
 
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return MyPasswordEncoder.createDelegatingPasswordEncoder();
+    }
 
     //Overriding default spring config for user
     @Override
