@@ -72,11 +72,11 @@ public class DefaultBreweryLoader implements CommandLineRunner {
         if(auth.count() > 0)
             return;
 
-        Authority admin = Authority.builder().role("ROLE_ADMIN").build();
-        Authority user = Authority.builder().role("ROLE_USER").build();
-        Authority customer = Authority.builder().role("ROLE_CUSTOMER").build();
+        Authority admin = Authority.builder().permission("ROLE_ADMIN").build();
+        Authority user = Authority.builder().permission("ROLE_USER").build();
+        Authority customer = Authority.builder().permission("ROLE_CUSTOMER").build();
         User adminx = User.builder().username("admin2").password(psw.encode("admin2"))
-                .authority(admin).build();
+                .(admin).build();
         User customerx = User.builder().username("scott").password(psw.encode("tiger"))
                 .authority(customer).build();
         User userx = User.builder().username("user").password(psw.encode("user")).authority(user).build();
