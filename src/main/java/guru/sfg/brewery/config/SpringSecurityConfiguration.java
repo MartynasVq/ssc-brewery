@@ -1,8 +1,10 @@
 package guru.sfg.brewery.config;
 
+import guru.sfg.brewery.security.JpaUserDetailsService;
 import guru.sfg.brewery.security.MyPasswordEncoder;
 import guru.sfg.brewery.security.RestHeaderAuthFilter;
 import guru.sfg.brewery.security.RestParamAuthFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -46,6 +48,8 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     PasswordEncoder passwordEncoder() {
         return MyPasswordEncoder.createDelegatingPasswordEncoder();
     }
+    @Autowired
+    JpaUserDetailsService jpaUserDetailsService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -56,12 +60,15 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests(auth -> {
             auth.antMatchers("/", "/webjars/**", "/resources/**").permitAll();
-            auth.antMatchers("/beers/find").permitAll();
+            auth.antMatchers("/beers/find", "/h2-console/**").permitAll();
             auth.antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
             .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll();
         })
                 .authorizeRequests().anyRequest().authenticated().and().formLogin()
                 .and().httpBasic();
+
+        //h2 console config
+        http.headers().frameOptions().sameOrigin();
     }
 
 
@@ -91,9 +98,12 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .password(pe.encode("admin2")).roles("ADMIN");
         */
 
-        auth.inMemoryAuthentication().withUser("admin2")
-                .password("{bcrypt11}$2a$11$BxZmrxKEGLZL1jY9PS0nXOdjtfFaTvE1RWtHvS6r/d/jqG0YA1X9S").roles("ADMIN").and().withUser("scott")
-        .password("{bcrypt11}$2a$11$v1mnKLiBfVEsqIMRIRRkoeBNjnUZLEnRkQBe1YAkdEIHdFYMzTyq6").roles("CUSTOMER");
+//        auth.inMemoryAuthentication().withUser("admin2")
+//                .password("{bcrypt11}$2a$11$BxZmrxKEGLZL1jY9PS0nXOdjtfFaTvE1RWtHvS6r/d/jqG0YA1X9S").roles("ADMIN").and().withUser("scott")
+//        .password("{bcrypt11}$2a$11$v1mnKLiBfVEsqIMRIRRkoeBNjnUZLEnRkQBe1YAkdEIHdFYMzTyq6").roles("CUSTOMER");
+
+        //jpa validation - also not needed , spring will automatically load in our custom user service and password encoder
+        //auth.userDetailsService(this.jpaUserDetailsService).passwordEncoder(passwordEncoder());
     }
 
 }

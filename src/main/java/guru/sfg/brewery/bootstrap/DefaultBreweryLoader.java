@@ -17,10 +17,17 @@
 package guru.sfg.brewery.bootstrap;
 
 import guru.sfg.brewery.domain.*;
+import guru.sfg.brewery.domain.security.Authority;
+import guru.sfg.brewery.domain.security.User;
 import guru.sfg.brewery.repositories.*;
+import guru.sfg.brewery.repositories.seurity.AuthorityRepository;
+import guru.sfg.brewery.repositories.seurity.UserRepository;
 import guru.sfg.brewery.web.model.BeerStyleEnum;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -30,6 +37,7 @@ import java.util.UUID;
 /**
  * Created by jt on 2019-01-26.
  */
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class DefaultBreweryLoader implements CommandLineRunner {
@@ -44,11 +52,40 @@ public class DefaultBreweryLoader implements CommandLineRunner {
     private final BeerInventoryRepository beerInventoryRepository;
     private final BeerOrderRepository beerOrderRepository;
     private final CustomerRepository customerRepository;
+    private final AuthorityRepository auth;
+    private final UserRepository userrep;
 
     @Override
     public void run(String... args) {
         loadBreweryData();
         loadCustomerData();
+        loadUserData();
+    }
+
+    private void loadUserData() {
+
+
+        BCryptPasswordEncoder bc = new BCryptPasswordEncoder(11);
+
+        if(auth.count() > 0)
+            return;
+
+        Authority admin = Authority.builder().role("ADMIN").build();
+        Authority user = Authority.builder().role("USER").build();
+        Authority customer = Authority.builder().role("CUSTOMER").build();
+        User adminx = User.builder().username("admin2").password("$2a$11$BxZmrxKEGLZL1jY9PS0nXOdjtfFaTvE1RWtHvS6r/d/jqG0YA1X9S")
+                .authority(admin).build();
+        User customerx = User.builder().username("scott").password("$2a$11$v1mnKLiBfVEsqIMRIRRkoeBNjnUZLEnRkQBe1YAkdEIHdFYMzTyq6")
+                .authority(customer).build();
+        User userx = User.builder().username("user").password(bc.encode("user")).authority(user).build();
+        auth.save(admin);
+        auth.save(user);
+        auth.save(customer);
+        userrep.save(adminx);
+        userrep.save(userx);
+        userrep.save(customerx);
+
+        log.debug("Users and authorities loaded");
     }
 
     private void loadCustomerData() {
