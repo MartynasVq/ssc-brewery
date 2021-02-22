@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -28,6 +29,7 @@ import java.net.http.HttpRequest;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
@@ -62,7 +64,11 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
             auth.antMatchers("/", "/webjars/**", "/resources/**").permitAll();
             auth.antMatchers("/beers/find", "/h2-console/**").permitAll();
             auth.antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
-            .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll();
+                    .antMatchers(HttpMethod.DELETE, "/api/v1/beer/**").hasRole("ADMIN")
+                    .antMatchers(HttpMethod.GET, "/brewery/api/v1/breweries").hasAnyRole("CUSTOMER", "ADMIN")
+                    .antMatchers("/brewery/breweries/**").hasAnyRole("CUSTOMER", "ADMIN")
+            .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll()
+            ;
         })
                 .authorizeRequests().anyRequest().authenticated().and().formLogin()
                 .and().httpBasic();
@@ -103,7 +109,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 //        .password("{bcrypt11}$2a$11$v1mnKLiBfVEsqIMRIRRkoeBNjnUZLEnRkQBe1YAkdEIHdFYMzTyq6").roles("CUSTOMER");
 
         //jpa validation - also not needed , spring will automatically load in our custom user service and password encoder
-        //auth.userDetailsService(this.jpaUserDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(this.jpaUserDetailsService).passwordEncoder(passwordEncoder());
     }
 
 }

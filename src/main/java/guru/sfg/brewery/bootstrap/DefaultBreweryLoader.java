@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -54,6 +55,7 @@ public class DefaultBreweryLoader implements CommandLineRunner {
     private final CustomerRepository customerRepository;
     private final AuthorityRepository auth;
     private final UserRepository userrep;
+    private final PasswordEncoder psw;
 
     @Override
     public void run(String... args) {
@@ -65,19 +67,19 @@ public class DefaultBreweryLoader implements CommandLineRunner {
     private void loadUserData() {
 
 
-        BCryptPasswordEncoder bc = new BCryptPasswordEncoder(11);
+
 
         if(auth.count() > 0)
             return;
 
-        Authority admin = Authority.builder().role("ADMIN").build();
-        Authority user = Authority.builder().role("USER").build();
-        Authority customer = Authority.builder().role("CUSTOMER").build();
-        User adminx = User.builder().username("admin2").password("$2a$11$BxZmrxKEGLZL1jY9PS0nXOdjtfFaTvE1RWtHvS6r/d/jqG0YA1X9S")
+        Authority admin = Authority.builder().role("ROLE_ADMIN").build();
+        Authority user = Authority.builder().role("ROLE_USER").build();
+        Authority customer = Authority.builder().role("ROLE_CUSTOMER").build();
+        User adminx = User.builder().username("admin2").password(psw.encode("admin2"))
                 .authority(admin).build();
-        User customerx = User.builder().username("scott").password("$2a$11$v1mnKLiBfVEsqIMRIRRkoeBNjnUZLEnRkQBe1YAkdEIHdFYMzTyq6")
+        User customerx = User.builder().username("scott").password(psw.encode("tiger"))
                 .authority(customer).build();
-        User userx = User.builder().username("user").password(bc.encode("user")).authority(user).build();
+        User userx = User.builder().username("user").password(psw.encode("user")).authority(user).build();
         auth.save(admin);
         auth.save(user);
         auth.save(customer);
