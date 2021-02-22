@@ -32,7 +32,7 @@ public class BeerControllerIT extends BaseIT{
     @WithMockUser("admin")
     @Test
     void findBeers() throws Exception {
-        mockMvc.perform(get("/beers/find/")).andExpect(status().isOk()).andExpect(view()
+        mockMvc.perform(get("/beers/find/").with(httpBasic("user", "user"))).andExpect(status().isOk()).andExpect(view()
                 .name("beers/findBeers")).andExpect(model().attributeExists("beer"));
     }
 
@@ -46,7 +46,7 @@ public class BeerControllerIT extends BaseIT{
 
     @Test
     void findBeersPermissionTest() throws Exception {
-        mockMvc.perform(get("/beers/find")).andExpect(status().isOk());
+        mockMvc.perform(get("/beers/find")).andExpect(status().isUnauthorized());
     }
 
 }

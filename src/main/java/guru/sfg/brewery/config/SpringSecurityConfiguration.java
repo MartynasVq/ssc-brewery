@@ -62,13 +62,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests(auth -> {
             auth.antMatchers("/", "/webjars/**", "/resources/**").permitAll();
-            auth.antMatchers("/beers/find", "/h2-console/**").permitAll();
-            auth.antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
-                    .antMatchers(HttpMethod.DELETE, "/api/v1/beer/**").hasRole("ADMIN")
-                    .antMatchers(HttpMethod.GET, "/brewery/api/v1/breweries").hasAnyRole("CUSTOMER", "ADMIN")
-                    .antMatchers("/brewery/breweries/**").hasAnyRole("CUSTOMER", "ADMIN")
-            .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll()
-            ;
+            auth.antMatchers("/h2-console/**").permitAll();
         })
                 .authorizeRequests().anyRequest().authenticated().and().formLogin()
                 .and().httpBasic();
