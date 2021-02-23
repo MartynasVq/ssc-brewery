@@ -3,6 +3,8 @@ package guru.sfg.brewery.web.controllers;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,13 +37,13 @@ public class CustomerControllerIT extends BaseIT {
         @Test
         void createCustomerIsOk() throws Exception {
             mockMvc.perform(post("/customers/new").param("customerName", "alex")
-                    .with(httpBasic("admin2","admin2"))).andExpect(status().is3xxRedirection());
+                    .with(httpBasic("admin2","admin2")).with(csrf())).andExpect(status().is3xxRedirection());
         }
 
         @Test
         void createCustomerUnauthorised() throws Exception {
             mockMvc.perform(post("/customers/new").param("customerName", "alex")
-                    ).andExpect(status().isUnauthorized());
+                    .with(csrf())).andExpect(status().isUnauthorized());
         }
 
         @Test

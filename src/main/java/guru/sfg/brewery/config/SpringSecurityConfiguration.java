@@ -64,7 +64,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(restHeaderAuthFilter(authenticationManager()),
                 UsernamePasswordAuthenticationFilter.class).addFilterBefore(
                         restParamAuthFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class)
-                .csrf().disable();
+                .csrf().ignoringAntMatchers("/h2-console/**", "/api/**");
 
         http.authorizeRequests(auth -> {
             auth.antMatchers("/", "/webjars/**", "/resources/**").permitAll();
