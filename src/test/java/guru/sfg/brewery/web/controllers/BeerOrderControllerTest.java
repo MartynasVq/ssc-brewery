@@ -50,9 +50,9 @@ class BeerOrderControllerTest extends BaseIT {
 
     @BeforeEach
     void setUp() {
-        stPeteCustomer = customerRepository.findAllByCustomerName("stpete").orElseThrow();
-        dunedinCustomer = customerRepository.findAllByCustomerName("dunedin").orElseThrow();
-        keyWestCustomer = customerRepository.findAllByCustomerName("keywest").orElseThrow();
+        stPeteCustomer = customerRepository.findAllByCustomerName(DefaultBreweryLoader.ST_PETE).orElseThrow();
+        dunedinCustomer = customerRepository.findAllByCustomerName(DefaultBreweryLoader.DUNEDIN).orElseThrow();
+        keyWestCustomer = customerRepository.findAllByCustomerName(DefaultBreweryLoader.KEY_WEST).orElseThrow();
         loadedBeers = beerRepository.findAll();
     }
 
