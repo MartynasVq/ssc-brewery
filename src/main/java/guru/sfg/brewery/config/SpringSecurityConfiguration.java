@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -34,7 +35,8 @@ import java.net.http.HttpRequest;
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
+    private final PersistentTokenRepository persistentTokenRepository;
 
     //for spring data
     @Bean
@@ -85,7 +87,10 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .logoutSuccessUrl("/?logout") //param can be used in th forms
                             .permitAll();
                 }).httpBasic()
-        .and().rememberMe().tokenValiditySeconds(100000000).key("L2BZ").userDetailsService(userDetailsService);
+        .and().rememberMe().tokenRepository(persistentTokenRepository).userDetailsService(userDetailsService);
+
+        //in memory config for tokens
+        //.and().rememberMe().tokenValiditySeconds(100000000).key("L2BZ").userDetailsService(userDetailsService);
 
         //h2 console config
         http.headers().frameOptions().sameOrigin();
