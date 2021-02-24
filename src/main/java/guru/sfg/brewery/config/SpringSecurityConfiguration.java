@@ -70,8 +70,16 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
             auth.antMatchers("/", "/webjars/**", "/resources/**").permitAll();
             auth.antMatchers("/h2-console/**").permitAll();
         })
-                .authorizeRequests().anyRequest().authenticated().and().formLogin()
-                .and().httpBasic();
+                .authorizeRequests().anyRequest().authenticated().and().formLogin(loginConfigurer -> {
+                    loginConfigurer.loginProcessingUrl("/login")
+                            .loginPage("/").permitAll()
+                            .failureForwardUrl("/")
+                            .defaultSuccessUrl("/");
+        })
+                .logout(logoutConfigurer -> {
+                    logoutConfigurer.logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                    .logoutSuccessUrl("/").permitAll();
+                }).httpBasic();
 
         //h2 console config
         http.headers().frameOptions().sameOrigin();
