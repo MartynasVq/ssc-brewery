@@ -120,7 +120,7 @@ public class BeerRestController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
+    @CrossOrigin
     @BeerDeletePermission
     @DeleteMapping({"beer/{beerId}"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
