@@ -74,11 +74,13 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     loginConfigurer.loginProcessingUrl("/login")
                             .loginPage("/").permitAll()
                             .failureForwardUrl("/")
-                            .defaultSuccessUrl("/");
+                            .defaultSuccessUrl("/")
+                            .failureUrl("/?error");
         })
                 .logout(logoutConfigurer -> {
                     logoutConfigurer.logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
-                    .logoutSuccessUrl("/").permitAll();
+                    .logoutSuccessUrl("/?logout") //param can be used in th forms
+                            .permitAll();
                 }).httpBasic();
 
         //h2 console config

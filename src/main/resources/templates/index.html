@@ -26,7 +26,8 @@
 <h2 th:text="#{welcomemsg}">SFG Brewery Monolith</h2>
 <div class="row">
     <div class="col-md-12" sec:authorize="!isAuthenticated()">
-        <p th:if="${loginError}" class="error">Username or password incorrect.</p>
+        <div th:if="${param.error}" class="alert alert-danger">Username or password incorrect.</div>
+        <div th:if="${param.logout}" class="alert alert-info">Logged out.</div>
         <form th:action="@{/login}" method="post">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" autofocus="true" placeholder="Enter login" autocomplete="off"/>
