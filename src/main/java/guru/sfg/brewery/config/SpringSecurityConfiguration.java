@@ -29,8 +29,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import java.net.http.HttpRequest;
 
 @Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+//@EnableWebSecurity
+//@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     //for spring data
@@ -96,20 +96,20 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 //    //alternative way of initializing the user
 
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        /* Encoder option 1
-        PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        auth.inMemoryAuthentication().withUser("admin2")
-                .password(pe.encode("admin2")).roles("ADMIN");
-        */
-
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        /* Encoder option 1
+//        PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 //        auth.inMemoryAuthentication().withUser("admin2")
-//                .password("{bcrypt11}$2a$11$BxZmrxKEGLZL1jY9PS0nXOdjtfFaTvE1RWtHvS6r/d/jqG0YA1X9S").roles("ADMIN").and().withUser("scott")
-//        .password("{bcrypt11}$2a$11$v1mnKLiBfVEsqIMRIRRkoeBNjnUZLEnRkQBe1YAkdEIHdFYMzTyq6").roles("CUSTOMER");
-
-        //jpa validation - also not needed , spring will automatically load in our custom user service and password encoder
-        auth.userDetailsService(this.jpaUserDetailsService).passwordEncoder(passwordEncoder());
-    }
+//                .password(pe.encode("admin2")).roles("ADMIN");
+//        */
+//
+////        auth.inMemoryAuthentication().withUser("admin2")
+////                .password("{bcrypt11}$2a$11$BxZmrxKEGLZL1jY9PS0nXOdjtfFaTvE1RWtHvS6r/d/jqG0YA1X9S").roles("ADMIN").and().withUser("scott")
+////        .password("{bcrypt11}$2a$11$v1mnKLiBfVEsqIMRIRRkoeBNjnUZLEnRkQBe1YAkdEIHdFYMzTyq6").roles("CUSTOMER");
+//
+//        //jpa validation - also not needed , spring will automatically load in our custom user service and password encoder
+//        auth.userDetailsService(this.jpaUserDetailsService).passwordEncoder(passwordEncoder());
+//    }
 
 }
