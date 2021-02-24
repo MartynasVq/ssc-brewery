@@ -10,10 +10,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebMvc implements WebMvcConfigurer {
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return MyPasswordEncoder.createDelegatingPasswordEncoder();
-    }
+//    @Bean
+//    PasswordEncoder passwordEncoder() {
+//        return MyPasswordEncoder.createDelegatingPasswordEncoder();
+//    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
