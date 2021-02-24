@@ -17,14 +17,32 @@
   -->
 
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
 <head>
     <meta charset="UTF-8"/>
     <title>SFG Brewery</title>
 </head>
 <body>
 <h2 th:text="#{welcomemsg}">SFG Brewery Monolith</h2>
+<div class="row">
+    <div class="col-md-12" sec:authorize="!isAuthenticated()">
+        <p th:if="${loginError}" class="error">Username or password incorrect.</p>
+        <form th:action="@{/login}" method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" autofocus="true" placeholder="Enter login" autocomplete="off"/>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password"/>
+            <input type="submit" value="Log in!">
+        </form>
+    </div>
+</div>
 
+<div class="row">
+    <div class="col-md-12" sec:authorize="isAuthenticated()">
+        <p th:text="'Welcome ' + ${#authentication?.principal?.username}"></p>
+        <p><a th:href="@{/logout}">Logout</p>
+    </div>
+</div>
 <div class="row">
     <div class="col-md-12">
         <img class="img-responsive" src="../static/resources/images/brewery.png" th:src="@{/resources/images/brewery.png}"/>
