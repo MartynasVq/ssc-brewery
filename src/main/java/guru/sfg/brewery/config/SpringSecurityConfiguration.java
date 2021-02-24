@@ -4,6 +4,7 @@ import guru.sfg.brewery.security.JpaUserDetailsService;
 import guru.sfg.brewery.security.MyPasswordEncoder;
 import guru.sfg.brewery.security.RestHeaderAuthFilter;
 import guru.sfg.brewery.security.RestParamAuthFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,11 +28,13 @@ import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.net.http.HttpRequest;
-
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    private UserDetailsService userDetailsService;
 
     //for spring data
     @Bean
@@ -81,7 +84,8 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     logoutConfigurer.logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
                     .logoutSuccessUrl("/?logout") //param can be used in th forms
                             .permitAll();
-                }).httpBasic();
+                }).httpBasic()
+        .and().rememberMe().tokenValiditySeconds(100000000).key("L2BZ").userDetailsService(userDetailsService);
 
         //h2 console config
         http.headers().frameOptions().sameOrigin();
