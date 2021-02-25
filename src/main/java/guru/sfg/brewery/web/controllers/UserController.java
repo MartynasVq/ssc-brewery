@@ -25,7 +25,7 @@ public class UserController {
     @GetMapping("register2fa")
     public String register2fa(Model model) {
         User user = getUser();
-        String url = GoogleAuthenticatorQRGenerator.getOtpAuthURL("L2BZ", user.getUsername(), googleAuthenticator.createCredentials());
+        String url = GoogleAuthenticatorQRGenerator.getOtpAuthURL("L2BZ", user.getUsername(), googleAuthenticator.createCredentials(user.getUsername()));
         log.debug(url);
         model.addAttribute("googleurl", url);
 
