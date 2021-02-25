@@ -11,5 +11,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     Optional<User> findByUsername(String username);
 
-    List<User> findAllAccountNonLockedAndLastModifiedDateIsBefore(Boolean b, Timestamp timestamp);
+    List<User> findAllByAccountNonLockedAndLastModifiedDateIsBefore(Boolean b, Timestamp timestamp);
 }
+

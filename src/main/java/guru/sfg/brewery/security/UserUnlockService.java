@@ -21,7 +21,7 @@ public class UserUnlockService {
     public void unlockAccounts() {
         log.debug("Unlocker running");
 
-        List<User> users = userRepository.findAllAccountNonLockedAndLastModifiedDateIsBefore(false, Timestamp.valueOf(
+        List<User> users = userRepository.findAllByAccountNonLockedAndLastModifiedDateIsBefore(false, Timestamp.valueOf(
                 LocalDateTime.now().minusMinutes(1)));
 
         if(users.size() > 0) {

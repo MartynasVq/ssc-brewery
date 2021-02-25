@@ -4,6 +4,7 @@ import guru.sfg.brewery.security.JpaUserDetailsService;
 import guru.sfg.brewery.security.MyPasswordEncoder;
 import guru.sfg.brewery.security.RestHeaderAuthFilter;
 import guru.sfg.brewery.security.RestParamAuthFilter;
+import guru.sfg.brewery.security.google.Google2FAFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,7 @@ import org.springframework.security.data.repository.query.SecurityEvaluationCont
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.SessionManagementFilter;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -37,6 +39,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final PersistentTokenRepository persistentTokenRepository;
+    private final Google2FAFilter google2FAFilter;
 
     //for spring data
     @Bean
@@ -70,6 +73,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 UsernamePasswordAuthenticationFilter.class).addFilterBefore(
                         restParamAuthFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class)
                 .csrf().ignoringAntMatchers("/h2-console/**", "/api/**");
+        http.addFilterBefore(google2FAFilter, SessionManagementFilter.class);
 
         http.authorizeRequests(auth -> {
             auth.antMatchers("/", "/webjars/**", "/resources/**").permitAll();
