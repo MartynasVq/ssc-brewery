@@ -32,9 +32,18 @@ public class UserController {
         return "user/register2fa";
     }
 
-    @PostMapping("register2fa")
+    @PostMapping
     public String confirm2fa(@RequestParam Integer verifyCode) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(googleAuthenticator.authorizeUser(user.getUsername(), verifyCode)) {
+            User savedUser = userRepository.findById(user.getId()).orElseThrow();
+            savedUser.setUseGoogle2FA(true);
+            userRepository.save(savedUser);
+            return "index";
+        } else {
+            return "user/register2fa";
+        }
 
-        return "index";
+
     }
 }
