@@ -49,12 +49,15 @@ public class Google2FAFilter extends GenericFilterBean {
 
         if(auth != null && trustResolver.isAnonymous(auth)) {
             log.debug("Processing 2fa filter");
-            User user = (User) auth.getPrincipal();
-            if(user.getUseGoogle2FA() && user.getGoogle2FARequired()) {
-                log.debug("2FA Required");
+            User user;
+            if(auth.getPrincipal() instanceof User) {
+                user = (User) auth.getPrincipal();
+                if (user.getUseGoogle2FA() && user.getGoogle2FARequired()) {
+                    log.debug("2FA Required");
 
-                google2FAFailureHandler.onAuthenticationFailure(request, response, null);
-                return;
+                    google2FAFailureHandler.onAuthenticationFailure(request, response, null);
+                    return;
+                }
             }
         }
 

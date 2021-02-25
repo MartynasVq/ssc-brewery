@@ -35,6 +35,7 @@ public class UserController {
     @PostMapping("register2fa")
     public String confirm2fa(@RequestParam Integer verifyCode) {
         User user = getUser();
+        log.debug("Entered Code is:" + verifyCode);
         if(googleAuthenticator.authorizeUser(user.getUsername(), verifyCode)) {
             User savedUser = userRepository.findById(user.getId()).orElseThrow();
             savedUser.setUseGoogle2FA(true);

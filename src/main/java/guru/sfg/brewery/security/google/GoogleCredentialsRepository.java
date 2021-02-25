@@ -23,10 +23,10 @@ public class GoogleCredentialsRepository implements ICredentialRepository {
     }
 
     @Override
-    public void saveUserCredentials(String s, String s1, int i, List<Integer> list) {
-        User user = userRepository.findByUsername(s).orElseThrow();
+    public void saveUserCredentials(String userName, String secretKey, int validationCode, List<Integer> scratchCodes) {
+        User user = userRepository.findByUsername(userName).orElseThrow();
 
-        user.setGoogle2FASecret(s1);
+        user.setGoogle2FASecret(secretKey);
         user.setUseGoogle2FA(true);
         userRepository.save(user);
     }
